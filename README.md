@@ -1,14 +1,17 @@
 # 🛰️ AstroAlert
 
-[![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.116.0-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Real-Time Space Weather Risk Detection and Satellite Tracking System
+Real-Time Space Weather Monitoring, Alerting, and Satellite Tracking System
 
 ## 🌟 Overview
 
-AstroAlert is an advanced monitoring system that provides real-time alerts and risk assessments for space weather events that could impact satellites, aviation, and power grids. The system integrates data from multiple sources to provide comprehensive space weather monitoring, satellite tracking, and impact analysis.
+AstroAlert is an advanced monitoring system that provides real-time alerts and risk assessments for space weather events that could impact satellites, aviation, and power grids. The system integrates data from multiple sources including NOAA's Space Weather Prediction Center to provide comprehensive space weather monitoring, satellite tracking, and impact analysis.
+
+Built with FastAPI and modern Python, AstroAlert offers a robust API for developers and a user-friendly interface for space weather enthusiasts and professionals.
 
 ## 🚀 Features
 
@@ -18,16 +21,20 @@ AstroAlert is an advanced monitoring system that provides real-time alerts and r
   - Solar activity (flares, CMEs, radiation)
   - Geomagnetic storms and Kp index tracking
   - Solar wind and interplanetary magnetic field data
+  - Solar flux measurements
+  - Real-time data visualization
 
 - **Satellite Operations**
   - Real-time satellite tracking and orbit visualization
-  - Risk assessment based on space weather conditions
-  - TLE data management and updates
+  - Pass prediction and visibility calculations
+  - TLE data management and automatic updates
+  - Impact assessment based on space weather conditions
 
 - **Alerting System**
   - Configurable alert thresholds
   - Multiple notification channels (in-app, email, webhooks)
   - Historical alert tracking and analysis
+  - WebSocket support for real-time updates
 
 ### Technical Features
 
@@ -51,17 +58,17 @@ AstroAlert is an advanced monitoring system that provides real-time alerts and r
 
 ### Prerequisites
 
-- Python 3.9+
-- Docker and Docker Compose (for containerized deployment)
+- Python 3.10+
+- Docker and Docker Compose (recommended)
 - Redis (for caching)
 - PostgreSQL (for persistent storage)
 
-### Local Development
+### Local Development with Docker (Recommended)
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/astroalert.git
-   cd astroalert
+   git clone https://github.com/yourusername/AstroAlert.git
+   cd AstroAlert
    ```
 
 2. **Set up environment variables**
@@ -70,33 +77,39 @@ AstroAlert is an advanced monitoring system that provides real-time alerts and r
    # Edit .env with your configuration
    ```
 
-3. **Set up virtual environment**
+3. **Start the services**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Access the application**
+   - API: http://localhost:8000
+   - API Documentation: http://localhost:8000/docs
+   - Prometheus Metrics: http://localhost:8000/metrics
+   - Grafana Dashboard: http://localhost:3000 (if enabled)
+
+### Manual Installation
+
+1. **Set up Python environment**
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-4. **Install dependencies**
+2. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-5. **Run the application**
+3. **Run database migrations**
    ```bash
-   # Start Redis and PostgreSQL (requires Docker)
-   docker-compose up -d redis postgres
-   
-   # Run database migrations
    alembic upgrade head
-   
-   # Start the application
-   uvicorn app.main:app --reload
    ```
 
-6. **Access the application**
-   - API: Available at the configured host and port (default: 8000)
-   - API Documentation: Available at `/docs` endpoint
-   - Streamlit Dashboard: Available at the configured host and port (default: 8501)
+4. **Start the application**
+   ```bash
+   uvicorn app.main:app --reload
+   ```
 
 ### Docker Deployment
 
@@ -113,46 +126,49 @@ docker-compose down
 - **NOAA Space Weather Prediction Center (SWPC)**
   - Real-time solar and geomagnetic data
   - Space weather alerts and forecasts
+  - Kp index and solar flux measurements
 
 - **CelesTrak**
   - Satellite Two-Line Element (TLE) data
   - Satellite catalog information
+  - Orbital elements and tracking
 
 - **NASA OMNIWeb**
   - Historical space weather data
   - Solar wind and IMF parameters
+  - Geomagnetic indices
 
 ## 📂 Project Structure
 
 ```
-/astroalert/
-  ├── app/                      # Application source code
-  │   ├── api/                  # API endpoints
-  │   │   └── v1/               # API version 1
-  │   │       ├── endpoints/    # Route handlers
-  │   │       └── api.py        # API router
-  │   ├── core/                 # Core functionality
-  │   │   ├── config.py         # Configuration
-  │   │   ├── security.py       # Authentication and authorization
-  │   │   └── logging.py        # Logging configuration
-  │   ├── db/                   # Database models and migrations
-  │   ├── models/               # Pydantic models
-  │   ├── schemas/              # Database schemas
-  │   ├── services/             # Business logic
-  │   └── utils/                # Utility functions
-  ├── tests/                    # Test suite
-  ├── alembic/                  # Database migrations
-  ├── docker/                   # Docker configuration
-  ├── scripts/                  # Utility scripts
-  ├── static/                   # Static files
-  ├── .env.example              # Example environment variables
-  ├── .gitignore
-  ├── alembic.ini               # Alembic configuration
-  ├── docker-compose.yml        # Docker Compose configuration
-  ├── Dockerfile               # Docker configuration
-  ├── main.py                  # Application entry point
-  ├── pyproject.toml           # Project metadata
-  └── README.md                # This file
+AstroAlert/
+├── app/                    # Application source code
+│   ├── api/                # API routes and endpoints
+│   │   └── v1/             # API version 1
+│   │       ├── endpoints/   # Route handlers
+│   │       └── api.py       # API router
+│   ├── core/               # Core functionality
+│   │   ├── config.py       # Configuration settings
+│   │   ├── cache.py        # Caching utilities
+│   │   └── logging.py      # Logging configuration
+│   ├── services/           # Business logic
+│   │   ├── base.py         # Base service class
+│   │   ├── space_weather.py # Space weather service
+│   │   └── satellites.py   # Satellite tracking service
+│   └── main.py             # Application entry point
+├── data_ingestion/         # Data collection scripts
+├── monitoring/             # Monitoring configuration
+│   └── prometheus.yml      # Prometheus configuration
+├── processing/             # Data processing scripts
+├── tests/                  # Test suite
+├── utils/                  # Utility functions
+├── visualization/          # Data visualization tools
+├── .env.example            # Example environment variables
+├── .gitignore
+├── docker-compose.yml      # Docker Compose configuration
+├── Dockerfile              # Docker configuration
+├── requirements.txt        # Project dependencies
+└── README.md              # This file
 ```
 
 ## 🧪 Testing
@@ -163,11 +179,14 @@ Run the test suite:
 # Install test dependencies
 pip install -r requirements-test.txt
 
-# Run tests
+# Run all tests
 pytest
 
 # Run tests with coverage
 pytest --cov=app --cov-report=term-missing
+
+# Run a specific test file
+pytest tests/test_space_weather.py -v
 ```
 
 ## 🤝 Contributing
@@ -189,12 +208,25 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **NOAA Space Weather Prediction Center** for real-time space weather data
 - **NASA** for historical space weather data and research
 - **CelesTrak** for satellite orbital data
-- The open-source community for amazing tools and libraries
+- **FastAPI** for the awesome web framework
+- **Skyfield** for astronomical calculations
 
 ## 📚 Documentation
 
-For detailed documentation, please see our [Documentation](https://astroalert.readthedocs.io).
+For detailed API documentation, visit the interactive documentation at `/docs` when running the application locally.
 
 ## 📞 Support
 
-For support, please open an issue in the [issue tracker](https://github.com/yourusername/astroalert/issues).
+For support, please open an issue in the [issue tracker](https://github.com/yourusername/AstroAlert/issues).
+
+## 🤝 Contributing
+
+We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on how to contribute to this project.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+Please make sure to update tests as appropriate and follow the code style guidelines.
