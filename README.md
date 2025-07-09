@@ -94,9 +94,9 @@ AstroAlert is an advanced monitoring system that provides real-time alerts and r
    ```
 
 6. **Access the application**
-   - API: http://localhost:8000
-   - API Documentation: http://localhost:8000/docs
-   - Streamlit Dashboard: http://localhost:8501
+   - API: Available at the configured host and port (default: 8000)
+   - API Documentation: Available at `/docs` endpoint
+   - Streamlit Dashboard: Available at the configured host and port (default: 8501)
 
 ### Docker Deployment
 
