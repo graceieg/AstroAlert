@@ -3,12 +3,7 @@
 A modern web application for astronomy enthusiasts to track celestial events and get alerts.
 
 ##  Features
-
-- Track upcoming astronomical events
-- Get personalized alerts for celestial events
-- Beautiful, responsive UI with dark mode
-- Real-time updates and notifications
-
+- Real-time updates and notifications on space weather
 ##  Tech Stack
 
 - React 18 with TypeScript
